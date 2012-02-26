@@ -97,6 +97,38 @@ static FJPhudgeServerInterface * __sharedInterface = nil;
     [request startAsynchronous];
 }
 
+
+- (void) getStreamWithBlock:(FJArrayAction)finished
+{
+    NSString * path = [SERVER_URL stringByAppendingString:@"/stream"];
+    
+    
+    NSURL * url = [NSURL URLWithString:path];
+    ASIHTTPRequest * request = [[ASIHTTPRequest alloc] initWithURL:url];
+    
+    [request setCompletionBlock:^{
+        NSString * response = request.responseString;
+        
+        NSArray * responseArray = [response JSONValue];
+        
+        if ([responseArray isKindOfClass:[NSArray class]]) {
+
+            finished(responseArray);
+
+        }
+        else {
+            finished(nil);
+        }
+    }];
+    
+    [request setFailedBlock:^{
+        NSLog(@"get stream failed");
+        finished(nil);
+    }];
+    
+    [request startAsynchronous];    
+}
+
 - (void) uploadImage:(UIImage*)image withType:(NSString*)type andLocation:(CLLocation*)location
 {
     NSString * path = [SERVER_URL stringByAppendingString:@"/photo"];
