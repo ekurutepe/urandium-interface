@@ -7,12 +7,15 @@
 //
 
 #import "FJViewController.h"
+#import "FJPhudgeServerInterface.h"
 
 @interface FJViewController ()
 
 @end
 
 @implementation FJViewController
+
+@synthesize imageView;
 
 - (void)viewDidLoad
 {
@@ -35,4 +38,30 @@
     }
 }
 
+- (IBAction) uploadTapped:(id)sender
+{
+    UIImagePickerController * picker = [[UIImagePickerController alloc] init];
+    
+    picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    
+    [self presentModalViewController:picker animated:YES];
+}
+
+- (IBAction) getImageTapped:(id)sender
+{
+    [[FJPhudgeServerInterface sharedInterface] getImageWithBlock:^(UIImage *image) {
+        self.imageView.image = image;
+    }];
+}
+
+- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
+{
+    [[FJPhudgeServerInterface sharedInterface] uploadImage:image
+                                                  withType:FJPhudgerServerImageTypeRaw
+                                               andLocation:nil];
+    
+    [self dismissModalViewControllerAnimated:YES];
+}
 @end

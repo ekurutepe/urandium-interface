@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FJViewController : UIViewController
+@interface FJViewController : UIViewController <UIImagePickerControllerDelegate>
+
+@property (nonatomic, strong) IBOutlet UIImageView * imageView;
+
+- (IBAction) uploadTapped:(id)sender;
+- (IBAction) getImageTapped:(id)sender;
+
 
 @end
